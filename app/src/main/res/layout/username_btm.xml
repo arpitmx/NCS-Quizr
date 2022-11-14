@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/qyellow"
+    >
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/fetcher"
+
+
+        />
+
+    <TextView
+        android:id="@+id/ncsdesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/mpsemibold"
+        android:text="Fill this form🙆‍♀"
+        android:textAlignment="center"
+        android:textColor="#C2000000"
+        android:textSize="25dp"
+
+        />
+
+    <TextView
+        android:id="@+id/ncsefw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:fontFamily="@font/mpregular"
+        android:text="Bip bop bip bop!"
+        android:textAlignment="center"
+        android:textColor="#7F000000"
+        android:textSize="18dp"
+
+        />
+
+    <EditText
+        android:id="@+id/usernameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:minHeight="65dp"
+        android:inputType="textPersonName"
+        android:background="@drawable/edit_boxbg"
+        android:fontFamily="@font/mpsemibold"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:hint="Username"
+        android:gravity="center"
+        android:textColor="#CE0069E9"
+        android:textSize="@dimen/fontsize_form"
+         />
+
+    <EditText
+        android:id="@+id/userCollegeEditBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:minHeight="65dp"
+        android:inputType="textPersonName"
+        android:background="@drawable/edit_boxbg"
+        android:fontFamily="@font/mpsemibold"
+        android:hint="College ID"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textColor="#CE0069E9"
+        android:textSize="@dimen/fontsize_form"
+        />
+
+    <EditText
+        android:id="@+id/pnoEditBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:minHeight="65dp"
+        android:inputType="phone"
+        android:background="@drawable/edit_boxbg"
+        android:fontFamily="@font/mpsemibold"
+        android:hint="Phone Number"
+        android:gravity="center"
+        android:typeface="monospace"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#CE0069E9"
+        android:textSize="@dimen/fontsize_form"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/button_pressed"
+        android:drawableTint="@color/white"
+        android:elevation="5dp"
+        android:fontFamily="@font/mpregular"
+        android:paddingStart="20dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="5dp"
+        android:text="Lets Go!"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+       />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

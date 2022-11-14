@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="imgheight">35dp</dimen>
+    <dimen name="margin_top_10">20dp</dimen>
+    <dimen name="btn_height">52dp</dimen>
+    <dimen name="fontsize_form">23dp</dimen>
+</resources>

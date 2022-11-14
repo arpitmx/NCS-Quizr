@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/progressBar"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mpregular"
+            android:text="Follow us:"
+            android:layout_marginBottom="15dp"
+            android:gravity="center"
+            android:textColor="#545454" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+
+            >
+            <ImageView
+                android:id="@+id/insta"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/imgheight"
+                android:src="@drawable/insta"
+                android:layout_marginEnd="10dp"
+                app:tint="@color/black_100" />
+            <ImageView
+                android:id="@+id/linkedin"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/imgheight"
+                android:src="@drawable/linked"
+                app:tint="@color/black_100"
+                android:layout_marginEnd="10dp"
+                />
+
+            <ImageView
+                android:id="@+id/web"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/imgheight"
+                android:src="@drawable/globe"
+                app:tint="@color/black_100"
+                />
+
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mpregular"
+            android:text="Made With 💙 By Nibble Computer Society"
+            android:textSize="15dp"
+            android:gravity="center"
+            android:textColor="@color/black_100" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
