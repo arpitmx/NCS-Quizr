@@ -36,7 +36,7 @@ class AlarmActivity : AppCompatActivity() {
         Log.d(TAG, "Alarm request recieved")
         Toast.makeText(this, "Surprise surprise!", Toast.LENGTH_LONG).show()
 
-        mediaPlayer = MediaPlayer.create(applicationContext,R.raw.alarmtechno)
+        mediaPlayer = MediaPlayer.create(applicationContext,R.raw.nokiaalarm)
 
         vibratePhone()
         ringPhone()

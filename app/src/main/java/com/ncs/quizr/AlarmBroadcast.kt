@@ -19,23 +19,8 @@ class AlarmBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context?, p1: Intent?) {
         Log.d(TAG, "Alarm request recieved")
 
-        //context!!.getSystemService(Context.VIBRATOR_SERVICE).vibrate(4000)
+        Toast.makeText(context, "Broadcast alarm!", Toast.LENGTH_LONG).show()
 
-        Toast.makeText(context, "Alarm! Wake up! Wake up!", Toast.LENGTH_LONG).show()
-        var alarmUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        if (alarmUri == null) {
-            alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        }
-
-        // setting default ringtone
-
-        // setting default ringtone
-        val ringtone = RingtoneManager.getRingtone(context, alarmUri)
-
-        // play ringtone
-
-        // play ringtone
-        ringtone.play()
 
     }
 }

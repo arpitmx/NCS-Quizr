@@ -2,9 +2,9 @@ package com.ncs.quizr
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.util.*
@@ -64,11 +64,9 @@ class FCMService : FirebaseMessagingService(){
                     //val calendar: Calendar = Calendar.getInstance()
 
                    // val alarmManager : AlarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    val broadcastIntent = Intent(this, AlarmActivity::class.java)
-                    broadcastIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(broadcastIntent)
                 //var pendingIntent : PendingIntent = PendingIntent.getBroadcast(this,0, broadcastIntent,0)
 
+                    setAlarmThroughBroadCast()
 
 
                 }
@@ -77,6 +75,24 @@ class FCMService : FirebaseMessagingService(){
 
         }
 
+
+    }
+
+    fun setAlarmThroughActivity(){
+        val broadcastIntent = Intent(this, AlarmActivity::class.java)
+        broadcastIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(broadcastIntent)
+    }
+
+
+    fun setAlarmThroughBroadCast(){
+        val broadcastIntent = Intent(this, AlarmBroadcast::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this.applicationContext, 234324243, broadcastIntent, 0
+        )
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10 * 1000,pendingIntent)
+        Toast.makeText(this, "Alarm set in 10 seconds",Toast.LENGTH_LONG).show();
 
     }
 }
