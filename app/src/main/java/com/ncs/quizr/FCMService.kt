@@ -1,8 +1,13 @@
 package com.ncs.quizr
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import java.util.*
 
 /**
  * Override base class methods to handle any events required by the application.
@@ -52,6 +57,21 @@ class FCMService : FirebaseMessagingService(){
                 }
 
                 Log.i("SellerFirebaseService ","FULL DATA : ${message.data}")
+
+                if(message.data["ringAlarm"] == "true"){
+                    Log.i("SellerFirebaseService ","Ring ring ")
+
+                    //val calendar: Calendar = Calendar.getInstance()
+
+                   // val alarmManager : AlarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val broadcastIntent = Intent(this, AlarmActivity::class.java)
+                    broadcastIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(broadcastIntent)
+                //var pendingIntent : PendingIntent = PendingIntent.getBroadcast(this,0, broadcastIntent,0)
+
+
+
+                }
 
             }
 
