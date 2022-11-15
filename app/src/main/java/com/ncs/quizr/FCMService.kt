@@ -66,8 +66,8 @@ class FCMService : FirebaseMessagingService(){
                    // val alarmManager : AlarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 //var pendingIntent : PendingIntent = PendingIntent.getBroadcast(this,0, broadcastIntent,0)
 
-                    setAlarmThroughBroadCast()
-
+                    //setAlarmThroughBroadCast()
+                    setAlarmThroughActivity()
 
                 }
 
@@ -88,11 +88,14 @@ class FCMService : FirebaseMessagingService(){
     fun setAlarmThroughBroadCast(){
         val broadcastIntent = Intent(this, AlarmBroadcast::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, 234324243, broadcastIntent, 0
-        )
+            this.applicationContext, 234324243, broadcastIntent, PendingIntent.FLAG_IMMUTABLE)
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10 * 1000,pendingIntent)
-        Toast.makeText(this, "Alarm set in 10 seconds",Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "Alarm set in 10 seconds",Toast.LENGTH_LONG).show();
 
     }
-}
+
+
+    }
+
+
