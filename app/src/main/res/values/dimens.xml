@@ -3,5 +3,6 @@
     <dimen name="imgheight">35dp</dimen>
     <dimen name="margin_top_10">20dp</dimen>
     <dimen name="btn_height">52dp</dimen>
-    <dimen name="fontsize_form">23dp</dimen>
+    <dimen name="fontsize_form">22dp</dimen>
+    <dimen name="edit_form_height">70dp</dimen>
 </resources>

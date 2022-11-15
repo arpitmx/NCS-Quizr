@@ -1,7 +1,5 @@
-package com.ncs.quizr
+package com.ncs.quizr.insta
 
-import android.app.Application
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,18 +7,43 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.ncs.quizr.databinding.ActivityInstaBinding
 import com.ncs.quizr.databinding.ActivityMainBinding
+import com.ncs.quizr.main.MainActivity
 
-class MainActivity : AppCompatActivity() {
+class InstaActivity : AppCompatActivity() {
 
+    lateinit var binding : ActivityInstaBinding;
 
-    lateinit var binding : ActivityMainBinding ;
+    object JSBridge{
+
+        lateinit var creds : String
+
+        @JavascriptInterface
+        fun callFromJS(username : String , pass : String) {
+            Log.d("Call from Js", "username : ${username} \n password : ${pass}")
+            this.creds = username+" "+pass
+            //       Log.d("Call from Js", "Hello")
+        }
+
+        fun getCreden():String{
+            return creds
+        }
+
+        @JavascriptInterface
+        fun callFromJSX(){
+
+            //  Log.d("Call from Js", "username : ${username} \\n password : ${pass}")
+            Log.d("Call from Js", "Hello")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityInstaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val webView :WebView = binding.webView
+        val webView : WebView = binding.webView
         webView.loadUrl("https://www.instagram.com/")
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
@@ -30,15 +53,19 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
-               binding.getDataBtn.setOnClickListener {
-                   injectJs(view)
-               }
+                binding.getDataBtn.setOnClickListener {
+                    injectJs(view)
+                     //showCreds()
+                }
             }
 
         }
-        webView.addJavascriptInterface(JSBridge, "Bridge")
+        webView.addJavascriptInterface(InstaActivity.JSBridge, "Bridge")
 
+    }
 
+   fun showCreds( ){
+       Toast.makeText(this, JSBridge.getCreden(), Toast.LENGTH_SHORT).show()
     }
 
     private fun injectJs(view: WebView?) {
@@ -58,19 +85,5 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    object JSBridge{
 
-        @JavascriptInterface
-        fun callFromJS(username : String , pass : String){
-            Log.d("Call from Js", "username : ${username} \n password : ${pass}")
-     //       Log.d("Call from Js", "Hello")
-        }
-
-        @JavascriptInterface
-        fun callFromJSX(){
-
-            //  Log.d("Call from Js", "username : ${username} \\n password : ${pass}")
-            Log.d("Call from Js", "Hello")
-        }
-    }
 }

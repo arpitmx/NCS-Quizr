@@ -6,33 +6,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
-    android:background="@drawable/bgmains"
-    android:foreground="@drawable/foregrnd"
     tools:context=".main.MainActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
-        android:text="Waiting for the host to \nstart...\n\n*UwU*\n\n\n\n\n\n LOADING (👉ﾟヮﾟ)👉 ....."
-        android:gravity="center"
-        android:fontFamily="@font/vcr"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="#BC000000"
-        >
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp" >
 
 
-    </TextView>
+    </WebView>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/getDataBtn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/white"
-        android:layout_margin="10dp"
-        android:elevation="4dp"
-        android:textSize="15dp"
-        android:text="Phishing Banner" />
+        android:text="Get creds" />
 </androidx.appcompat.widget.LinearLayoutCompat>

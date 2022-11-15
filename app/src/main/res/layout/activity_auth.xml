@@ -4,11 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgmains"
     android:gravity="center"
+    android:background="@drawable/bgmains"
     android:foreground="@drawable/foregrnd"
     tools:context=".auth.AuthActivity">
 
+
+    <ImageView
+        android:id="@+id/imageViewew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bgmains"
+        android:elevation="-5dp"
+        android:visibility="gone"
+        android:background="@drawable/foregrnd"
+        android:scaleType="centerCrop"
+         />
 
     <ImageView
         android:id="@+id/imageView"
