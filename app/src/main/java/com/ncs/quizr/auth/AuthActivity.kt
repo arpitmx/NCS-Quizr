@@ -29,6 +29,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ncs.quizr.main.MainActivity
 import com.ncs.quizr.R
 import com.ncs.quizr.databinding.ActivityAuthBinding
@@ -137,6 +138,7 @@ class AuthActivity : AppCompatActivity() {
 
                     val email = userAccount.email
 
+                getToken(email!!)
                 val userData = hashMapOf(
                     "userID" to userAccount.uid,
                     "username" to userName,
@@ -144,9 +146,10 @@ class AuthActivity : AppCompatActivity() {
                     "emailID" to email,
                     "photoURL" to userAccount.photoUrl,
                     "phone" to pno,
+
                 )
 
-                DB.collection("users").document(email!!)
+                DB.collection("users").document(email)
                     .set(userData)
                     .addOnSuccessListener { documentReference ->
 
@@ -156,7 +159,10 @@ class AuthActivity : AppCompatActivity() {
                         editor.putString("userName", userName)
                         editor.putString("collegeID", userCollegeID)
                         editor.putString("uID", userAccount.uid)
+                        editor.putString("email", email)
+                        editor.putString("profileurl", userAccount.photoUrl.toString())
                         editor.putBoolean("isFormComplete", true)
+
                         editor.apply()
                         editor.commit()
 
@@ -218,6 +224,22 @@ class AuthActivity : AppCompatActivity() {
             }
             false
         }
+    }
+
+    fun getToken(email:String):Unit  {
+
+        FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
+            if(result != null){
+                DB.collection("users").document(email)
+                    .set(hashMapOf("fcmToken" to result))
+
+                Log.d("MainActivity", "Token : $result")
+                // DO your thing with your firebase token
+
+            }
+
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

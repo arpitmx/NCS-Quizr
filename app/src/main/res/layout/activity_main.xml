@@ -6,18 +6,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
-    android:background="@drawable/bgmains"
-    android:foreground="@drawable/foregrnd"
+
     tools:context=".main.MainActivity">
+
+    <include
+        android:id="@+id/actionbr"
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        layout="@layout/actionbar"
+
+        />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9"
+        android:layout_weight="8"
+        android:layout_margin= "10dp"
+        android:elevation="3dp"
         android:text="Waiting for the host to \nstart...\n\n*UwU*\n\n\n\n\n\n LOADING (👉ﾟヮﾟ)👉 ....."
         android:gravity="center"
+        android:background="@drawable/button_yellow_curved"
         android:fontFamily="@font/vcr"
+
         android:textSize="20dp"
         android:textStyle="bold"
         android:textColor="#BC000000"
@@ -25,14 +36,36 @@
 
 
     </TextView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/startQuizbtn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_blue_curved"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:textColor="@color/qyellow"
+        android:elevation="0dp"
+        android:textSize="20dp"
+        android:enabled="false"
+        android:fontFamily="@font/mpsemibold"
+        android:textAllCaps="false"
+        android:text="Start Quiz!🍻 " />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/getDataBtn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/white"
-        android:layout_margin="10dp"
-        android:elevation="4dp"
-        android:textSize="15dp"
-        android:text="Phishing Banner" />
+        android:background="@drawable/button_white_curved"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:elevation="0dp"
+        android:textSize="20dp"
+        android:fontFamily="@font/mpsemibold"
+        android:textAllCaps="false"
+        android:text="Get NCS Goodies!🍻 " />
 </androidx.appcompat.widget.LinearLayoutCompat>

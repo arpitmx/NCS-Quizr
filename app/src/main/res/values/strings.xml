@@ -3,4 +3,7 @@
     <string name="webclient_id">489910843376-17jarb0406vjs7tcavgemj1o3r8r6smg.apps.googleusercontent.com</string>
     <string name="alarmchannelid">alarm123</string>
     <string name="default_notification_channel_id">alarm123</string>
+    <string name="title_activity_quiz">QuizActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

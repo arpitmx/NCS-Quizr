@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -16,20 +16,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizr"
         tools:targetApi="31">
+        <activity
+            android:name=".quiz.QuizActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_quiz"
+            android:theme="@style/Theme.Quizr.Fullscreen" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_launcher_foreground" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/qblue" />
-
 
         <activity
             android:name=".AlarmActivity"
@@ -38,9 +40,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".insta.GoodiesActivity" />
         <activity
             android:name=".insta.InstaActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.Quizr.insta">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -61,18 +65,18 @@
         </activity>
         <activity
             android:name=".main.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Quizr.main"
+         >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
 
-
-        <receiver android:name=".AlarmBroadcast"
+        <receiver
+            android:name=".AlarmBroadcast"
             android:enabled="true"
-            android:exported="true"
-            />
-
+            android:exported="true" />
 
         <service
             android:name=".FCMService"
@@ -80,8 +84,6 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
-
         </service>
     </application>
 

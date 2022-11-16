@@ -1,21 +1,31 @@
 package com.ncs.quizr.main
 
+import android.R
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ncs.quizr.AlarmBroadcast
 import com.ncs.quizr.AlarmService
+import com.ncs.quizr.dataClasses.sharedPrefsKeys
 import com.ncs.quizr.databinding.ActivityMainBinding
-import com.ncs.quizr.insta.InstaActivity
+import com.ncs.quizr.insta.GoodiesActivity
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityMainBinding ;
     lateinit var pendingIntent : PendingIntent
+    lateinit var sharedPref : SharedPreferences
+    val pref: sharedPrefsKeys = sharedPrefsKeys()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,13 +42,36 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        sharedPref = getSharedPreferences(pref.sharedPrefID, MODE_PRIVATE)
+        initViews()
         getToken()
         subscribeToTopics()
+
+
+        val anim : Animation = AnimationUtils.loadAnimation(this,com.ncs.quizr.R.anim.fade_in)
+        binding.actionbr.title.startAnimation(anim)
         //setAlarm(1)
         //setAlarm2()
         binding.getDataBtn.setOnClickListener{
-            startActivity(Intent(this, InstaActivity::class.java))
+            startActivity(Intent(this, GoodiesActivity::class.java))
         }
+
+        binding.startQuizbtn.setOnClickListener{
+            startActivity(Intent(this, GoodiesActivity::class.java))
+        }
+
+    }
+
+    fun initViews(){
+
+
+        val options: RequestOptions = RequestOptions()
+            .centerInside()
+            .placeholder(com.ncs.quizr.R.drawable.goog)
+            .error(com.ncs.quizr.R.drawable.goog)
+
+        Glide.with(this).load(sharedPref.getString(pref.photoUrl,"")).apply(options).into(binding.actionbr.profileImage)
+
 
     }
 

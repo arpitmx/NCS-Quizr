@@ -4,13 +4,15 @@
 
 
     <scale
-        android:duration="150"
+        android:duration="500"
         android:fromXScale="0.0"
         android:fromYScale="0.0"
         android:pivotX="60%"
         android:pivotY="60%"
         android:toXScale="1"
-        android:toYScale="1" />
+        android:toYScale="1"
+        android:repeatCount="infinite"
+        />
 
 
 
