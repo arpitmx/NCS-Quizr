@@ -1,33 +1,31 @@
 package com.ncs.quizr
 
 import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import android.widget.RemoteViews
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.ncs.quizr.insta.InstaActivity
+import com.ncs.quizr.main.MainActivity
 import java.util.*
 
-/**
- * Override base class methods to handle any events required by the application.
- * All methods are invoked on a background thread, and may be called when the app is in the background or not open.
- *
- *  The registration token may change when:
- *  - The app deletes Instance ID
- *  - The app is restored on a new device
- *  - The user uninstalls/reinstall the app
- *  - The user clears app data.
- */
 
+const val channelID = "alarm123"
+const val channelName = "com.ncs.alarmChannel"
 
 class FCMService : FirebaseMessagingService(){
 
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
+    lateinit var pendingIntent : PendingIntent
+
     override fun onNewToken(token:String){
         super.onNewToken(token)
         Log.i("SellerFirebaseService ","Refreshed token :: $token")
@@ -38,12 +36,14 @@ class FCMService : FirebaseMessagingService(){
     }
 
     private fun sendRegistrationToServer(token:String){
-        // TODO : send token to tour server
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onMessageReceived(message: RemoteMessage){
         super.onMessageReceived(message)
+       // Toast.makeText(this, "Recieved Notif",Toast.LENGTH_LONG).show();
         Log.i("SellerFirebaseService ","Message from :: ${message.from}")
+
         if (message.notification != null){
             val title: String? = message.notification!!.title
             val body: String? = message.notification!!.body
@@ -61,18 +61,21 @@ class FCMService : FirebaseMessagingService(){
                 if(message.data["ringAlarm"] == "true"){
                     Log.i("SellerFirebaseService ","Ring ring ")
 
-                    //val calendar: Calendar = Calendar.getInstance()
-
-                   // val alarmManager : AlarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                //var pendingIntent : PendingIntent = PendingIntent.getBroadcast(this,0, broadcastIntent,0)
-
-                    //setAlarmThroughBroadCast()
-                    setAlarmThroughActivity()
+                   setAlarm2()
 
                 }
 
             }
 
+        }
+
+        if (message.notification != null) {
+            generateNotification(
+                message.notification!!.title!!,
+                message.notification!!.body!!
+            )
+
+            setAlarm2()
         }
 
 
@@ -92,6 +95,60 @@ class FCMService : FirebaseMessagingService(){
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10 * 1000,pendingIntent)
        // Toast.makeText(this, "Alarm set in 10 seconds",Toast.LENGTH_LONG).show();
+
+    }
+
+    fun getRemoteView(title: String,body:String) : RemoteViews {
+        val remoteView = RemoteViews("com.ncs.quizr",R.layout.auth_notification)
+        remoteView.setTextViewText(R.id.title,title)
+        remoteView.setTextViewText(R.id.body,body)
+        remoteView.setImageViewResource(R.id.logo,R.drawable.ic_launcher_foreground)
+        return remoteView
+    }
+
+    fun generateNotification(title:String, message:String){
+        val intent = Intent(this, InstaActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        var pendingIntent: PendingIntent? = null
+        pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+        } else {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        }
+
+
+        var builder : NotificationCompat.Builder = NotificationCompat.Builder(applicationContext,
+            channelID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setVibrate(longArrayOf(1000,1000,1000,1000))
+            .setAutoCancel(false)
+            .setOnlyAlertOnce(true)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+
+        builder = builder.setContent(getRemoteView(title, message))
+        val notificationManager= getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val notificationChannel = NotificationChannel(channelID, channelName,
+                NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+
+        notificationManager.notify(0,builder.build())
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun setAlarm2(){
+
+
+        val intent = Intent(this, AlarmBroadcast::class.java)
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5 * 1000,pendingIntent)
+
 
     }
 

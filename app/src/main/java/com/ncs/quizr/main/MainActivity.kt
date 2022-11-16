@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ncs.quizr.AlarmBroadcast
-import com.ncs.quizr.AlarmReceiver
 import com.ncs.quizr.AlarmService
 import com.ncs.quizr.databinding.ActivityMainBinding
 import com.ncs.quizr.insta.InstaActivity
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         getToken()
         subscribeToTopics()
         //setAlarm(1)
-        setAlarm2()
+        //setAlarm2()
         binding.getDataBtn.setOnClickListener{
             startActivity(Intent(this, InstaActivity::class.java))
         }
@@ -97,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     fun setAlarm2(){
 
 
-        val intent = Intent(this, AlarmReceiver::class.java)
+        val intent = Intent(this, AlarmBroadcast::class.java)
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
