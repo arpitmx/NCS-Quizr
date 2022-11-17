@@ -1,51 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/fullscreenBackgroundColor"
-    android:theme="@style/ThemeOverlay.Quizr.FullscreenContainer"
+    android:orientation="vertical"
+    android:background="@color/white"
+
     tools:context=".quiz.QuizActivity">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
     <TextView
-        android:id="@+id/fullscreen_content"
+        android:id="@+id/club_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        android:text="Programming Club"
+        android:fontFamily="@font/mpsemibold"
+        android:textSize="20dp"
+        android:elevation="5dp"
+        android:textColor="@color/light_blue_600"
         android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="?attr/fullscreenTextColor"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        />
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
-    <FrameLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:orientation="vertical"
 
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="@style/Widget.Theme.Quizr.ButtonBar.Fullscreen"
+        >
+        <TextView
+            android:id="@+id/questionNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
+            android:minHeight="60dp"
+            android:background="@drawable/button_white_curved"
+            android:text="Question 1"
+            android:fontFamily="@font/mpsemibold"
+            android:textSize="24dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
 
-            <Button
-                android:id="@+id/dummy_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/questionBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_white_curved"
+            android:layout_margin="10dp"
+            android:minHeight="450dp"
+            android:textSize="23dp"
+            android:backgroundTint="#141414"
+            android:text="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of etters, as opposed to using?"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textColor="#38FF00"
+            android:fontFamily="@font/mpregular"
+            />
 
-        </LinearLayout>
-    </FrameLayout>
+        <EditText
+            android:id="@+id/answerBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_white_curved_editbox"
+            android:layout_margin="10dp"
+            android:minHeight="75dp"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:textSize="22dp"
+            android:hint="Answer here in one word"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="10dp"
+            android:textColor="@color/black_100"
+            android:fontFamily="@font/mpsemibold"
+            />
 
-</FrameLayout>
+
+            <RadioGroup
+                android:id="@+id/mcqGroup"
+            android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:paddingEnd="10dp"
+                android:background="@drawable/button_white_curved"
+
+                >
+                <RadioButton
+                    android:id="@+id/option1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/minHeight_radio"
+                    android:background="@drawable/button_white_curved_editbox"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:maxLines="3"
+                    android:padding="10dp"
+                    android:text="Java"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/mpregular"
+                    android:textColor="@color/black_100"
+                    android:paddingStart="10dp"
+                    android:layout_marginBottom="@dimen/radioMargin"
+                    android:layout_marginTop="@dimen/radioMargin"
+                    />
+
+                <RadioButton
+                    android:id="@+id/option2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/minHeight_radio"
+                    android:background="@drawable/button_white_curved_editbox"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:maxLines="3"
+                    android:padding="10dp"
+                    android:text="Python"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/mpregular"
+                    android:textColor="@color/black_100"
+                    android:paddingStart="10dp"
+                    android:layout_marginBottom="@dimen/radioMargin"
+                    android:layout_marginTop="@dimen/radioMargin"
+                    />
+                <RadioButton
+                    android:id="@+id/option3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/minHeight_radio"
+                    android:background="@drawable/button_white_curved_editbox"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:maxLines="3"
+                    android:padding="10dp"
+                    android:text="Rust"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/mpregular"
+                    android:textColor="@color/black_100"
+                    android:paddingStart="10dp"
+                    android:layout_marginBottom="@dimen/radioMargin"
+                    android:layout_marginTop="@dimen/radioMargin"
+                    />
+                <RadioButton
+                    android:id="@+id/option4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/minHeight_radio"
+                    android:background="@drawable/button_white_curved_editbox"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:maxLines="3"
+                    android:padding="10dp"
+                    android:text="Ruby"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/mpregular"
+                    android:textColor="@color/black_100"
+                    android:paddingStart="10dp"
+                    android:layout_marginBottom="@dimen/radioMargin"
+                    android:layout_marginTop="@dimen/radioMargin"
+                    />
+
+
+            </RadioGroup>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/submitBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:maxHeight="70dp"
+            android:background="@drawable/button_blue_curved"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="10dp"
+            android:text="Next"
+            android:textSize="23dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/mpsemibold"
+
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

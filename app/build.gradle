@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging:23.1.0'
-
+    implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
 

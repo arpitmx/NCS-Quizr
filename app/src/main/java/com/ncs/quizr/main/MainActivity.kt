@@ -1,30 +1,39 @@
 package com.ncs.quizr.main
 
-import android.R
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.appcompat.widget.AppCompatDrawableManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
+import com.google.android.gms.common.config.GservicesValue.value
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ncs.quizr.AlarmBroadcast
 import com.ncs.quizr.AlarmService
+import com.ncs.quizr.dataClasses.realTimeDatabaseRefPaths
 import com.ncs.quizr.dataClasses.sharedPrefsKeys
 import com.ncs.quizr.databinding.ActivityMainBinding
 import com.ncs.quizr.insta.GoodiesActivity
+import com.ncs.quizr.quiz.QuizActivity
 import java.util.*
+import com.ncs.quizr.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +44,71 @@ class MainActivity : AppCompatActivity() {
     lateinit var pendingIntent : PendingIntent
     lateinit var sharedPref : SharedPreferences
     val pref: sharedPrefsKeys = sharedPrefsKeys()
+    val fbref: realTimeDatabaseRefPaths = realTimeDatabaseRefPaths()
+
+
+    private lateinit var db: FirebaseDatabase
+    private lateinit var ref : DatabaseReference
+
+    val TAG = "MainActivity"
+
+
+
+    private val postListener = object : ValueEventListener {
+
+
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            val started = dataSnapshot.value
+
+            if (started == fbref.opStatus().opStarted){
+                Toast.makeText(applicationContext, "Quiz started by admin", Toast.LENGTH_SHORT).show()
+                binding.startQuizbtn.text = "Start Quiz!\uD83C\uDF7B"
+                binding.startQuizbtn.isEnabled = true
+                binding.notice.text = "-NCS OP- \n\n Admin has started the Quiz\n tap on Start Quiz button to start...\n\n*UwU*"
+                binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved)
+                binding.progressBar.visibility = View.GONE
+
+            }else if (started == fbref.opStatus().opNotStarted){
+                Toast.makeText(applicationContext, "Wait for admin to start", Toast.LENGTH_SHORT).show()
+                binding.startQuizbtn.text = "Wait for Admin!\uD83C\uDF7B "
+                binding.startQuizbtn.isEnabled = false
+                binding.notice.text = "-NCS OP- \n\n Waiting for the host to \nstart...\n\n*UwU*\n\n\n\n\n\n LOADING (👉ﾟヮﾟ)👉 ....."
+
+                binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
+                binding.progressBar.visibility = View.VISIBLE
+
+
+            }else if (started == fbref.opStatus().opEnded){
+                Toast.makeText(applicationContext, "OP Ended", Toast.LENGTH_SHORT).show()
+                binding.startQuizbtn.text = "OP Ended! \uD83C\uDF7B "
+                binding.startQuizbtn.isEnabled = false
+                binding.notice.text = "-NCS OP- \n\n OP Ended see you at workshops! \n\n*UwU*\n\n\n\n\n\n See ya soon!"
+                binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
+                binding.progressBar.visibility = View.GONE
+
+
+            }else {
+                Toast.makeText(applicationContext, "Wait for server to respond", Toast.LENGTH_SHORT).show()
+                binding.startQuizbtn.text = "Waiting for server! \uD83C\uDF7B "
+                binding.startQuizbtn.isEnabled = false
+                binding.notice.text = "-NCS OP- \n\n Waiting for the server to respond! \n\n*UwU*\n\n\n\n\n\n Hold tight!"
+                binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
+                binding.progressBar.visibility = View.VISIBLE
+
+
+            }
+
+
+            Log.d(TAG, "Value is: $started")
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            // Failed to read value
+            Toast.makeText(applicationContext, "Low connectivity, restart." , Toast.LENGTH_SHORT).show()
+            Log.w(TAG, "Failed to read value.", error.toException())
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,26 +117,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sharedPref = getSharedPreferences(pref.sharedPrefID, MODE_PRIVATE)
+        db = Firebase.database
+        ref = db.getReference(fbref.opConfig)
+        binding.progressBar.visibility = View.VISIBLE
+
+
         initViews()
         getToken()
         subscribeToTopics()
 
 
-        val anim : Animation = AnimationUtils.loadAnimation(this,com.ncs.quizr.R.anim.fade_in)
-        binding.actionbr.title.startAnimation(anim)
-        //setAlarm(1)
-        //setAlarm2()
+
+
         binding.getDataBtn.setOnClickListener{
             startActivity(Intent(this, GoodiesActivity::class.java))
         }
 
         binding.startQuizbtn.setOnClickListener{
-            startActivity(Intent(this, GoodiesActivity::class.java))
+            startActivity(Intent(this, QuizActivity::class.java))
         }
 
     }
 
     fun initViews(){
+
+        val anim : Animation = AnimationUtils.loadAnimation(this,com.ncs.quizr.R.anim.fade_in)
+        binding.actionbr.title.startAnimation(anim)
 
 
         val options: RequestOptions = RequestOptions()
@@ -71,7 +151,7 @@ class MainActivity : AppCompatActivity() {
             .error(com.ncs.quizr.R.drawable.goog)
 
         Glide.with(this).load(sharedPref.getString(pref.photoUrl,"")).apply(options).into(binding.actionbr.profileImage)
-
+        ref.child(fbref.opConfig_isStarted).addValueEventListener(postListener)
 
     }
 
@@ -143,3 +223,4 @@ class MainActivity : AppCompatActivity() {
 
 
 }
+
