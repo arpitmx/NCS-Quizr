@@ -18,7 +18,7 @@ class Questions {
             ,"Android is based on which kernel ?","Java compiler based or interpreted language?","Ek aur question!")
         val isMCQWebClub = arrayListOf<Boolean>(false,true,false,false,false)
         val mcQsolutionsWeb: HashMap<Int,Array<String>> = HashMap()
-        mcQsolutionsProg.put(2, arrayOf("Java","Kotlin","JavaScript","Python"))
+        mcQsolutionsWeb.put(2, arrayOf("Java","Kotlin","JavaScript","Python"))
 
 
         val totalQues = 10
@@ -37,7 +37,7 @@ class Questions {
                 var j = i-5
                 if (isMCQWebClub[j]==true) {
 
-                    questionList.add(Question(index, "Web", queArrWebClub[j], isMCQWebClub[j],mcQsolutionsWeb.get(index-6)))
+                    questionList.add(Question(index, "Web", queArrWebClub[j], true,mcQsolutionsWeb.get(index-5)))
                 }else {
                     questionList.add(Question(index, "Web", queArrWebClub[j], isMCQWebClub[j],null))
                 }

@@ -2,9 +2,8 @@ package com.ncs.quizr.main
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -65,6 +64,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Quiz started by admin", Toast.LENGTH_SHORT).show()
                 binding.startQuizbtn.text = "Start Quiz!\uD83C\uDF7B"
                 binding.startQuizbtn.isEnabled = true
+                binding.startQuizbtn.isClickable= true
+
+                binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.notice.text = "-NCS OP- \n\n Admin has started the Quiz\n tap on Start Quiz button to start...\n\n*UwU*"
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved)
                 binding.progressBar.visibility = View.GONE
@@ -72,7 +74,10 @@ class MainActivity : AppCompatActivity() {
             }else if (started == fbref.opStatus().opNotStarted){
                 Toast.makeText(applicationContext, "Wait for admin to start", Toast.LENGTH_SHORT).show()
                 binding.startQuizbtn.text = "Wait for Admin!\uD83C\uDF7B "
+                binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.startQuizbtn.isEnabled = false
+                binding.startQuizbtn.isClickable= false
+
                 binding.notice.text = "-NCS OP- \n\n Waiting for the host to \nstart...\n\n*UwU*\n\n\n\n\n\n LOADING (👉ﾟヮﾟ)👉 ....."
 
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
@@ -83,6 +88,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "OP Ended", Toast.LENGTH_SHORT).show()
                 binding.startQuizbtn.text = "OP Ended! \uD83C\uDF7B "
                 binding.startQuizbtn.isEnabled = false
+                binding.startQuizbtn.isClickable= false
+
+                binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.notice.text = "-NCS OP- \n\n OP Ended see you at workshops! \n\n*UwU*\n\n\n\n\n\n See ya soon!"
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
                 binding.progressBar.visibility = View.GONE
@@ -92,6 +100,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Wait for server to respond", Toast.LENGTH_SHORT).show()
                 binding.startQuizbtn.text = "Waiting for server! \uD83C\uDF7B "
                 binding.startQuizbtn.isEnabled = false
+                binding.startQuizbtn.isClickable= false
+
+                binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.notice.text = "-NCS OP- \n\n Waiting for the server to respond! \n\n*UwU*\n\n\n\n\n\n Hold tight!"
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
                 binding.progressBar.visibility = View.VISIBLE
@@ -159,9 +170,9 @@ class MainActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().subscribeToTopic("alarm")
             .addOnCompleteListener { task ->
                 if (task.isSuccessful()) {
-                    Toast.makeText(this, "Alarm subscribed ", Toast.LENGTH_SHORT).show()
+                   // Toast.makeText(this, "Alarm subscribed ", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Alarm subscription failed ", Toast.LENGTH_SHORT).show()
+                  //  Toast.makeText(this, "Alarm subscription failed ", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -170,7 +181,7 @@ class MainActivity : AppCompatActivity() {
 
         FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
             if(result != null){
-                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+               // Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
                 Log.d("MainActivity", "Token : $result")
                 // DO your thing with your firebase token
             }
@@ -219,6 +230,36 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Alarm set in 10 seconds",Toast.LENGTH_LONG).show();
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerReceiver(broadcastReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(broadcastReceiver)
+    }
+
+    private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val notConnected = intent.getBooleanExtra(
+                ConnectivityManager
+                .EXTRA_NO_CONNECTIVITY, false)
+            if (notConnected) {
+                binding.startQuizbtn.isEnabled= false
+                Toast.makeText(baseContext, "Low connection, please check your internet!", Toast.LENGTH_SHORT).show()
+                binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
+
+            } else {
+                binding.startQuizbtn.isEnabled = true
+                Toast.makeText(baseContext, "Connection stable!", Toast.LENGTH_SHORT).show()
+                binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved)
+
+
+            }
+        }
     }
 
 

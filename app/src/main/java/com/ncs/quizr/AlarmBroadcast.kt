@@ -39,7 +39,7 @@ class AlarmBroadcast : BroadcastReceiver() {
         mediaPlayer.setVolume(100f, 100f)
         mediaPlayer.start()
 
-        Timer().schedule(20000) {
+        Timer().schedule(25000) {
             mediaPlayer.stop()
             mediaPlayer.release()
 

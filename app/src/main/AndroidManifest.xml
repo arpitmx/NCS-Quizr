@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,12 +16,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizr"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".admin.AdminActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".quiz.QuizActivity"
             android:exported="false"
-            android:theme="@style/Theme.Quizr.quiz"
-            >
+            android:theme="@style/Theme.Quizr.quiz">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -38,7 +45,7 @@
 
         <activity
             android:name=".AlarmActivity"
-            android:exported="false" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -47,7 +54,7 @@
         <activity
             android:name=".insta.InstaActivity"
             android:exported="false"
-            android:theme="@style/Theme.Quizr.insta" >
+            android:theme="@style/Theme.Quizr.insta">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -55,7 +62,7 @@
         <activity
             android:name=".auth.AuthActivity"
             android:exported="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,7 +76,7 @@
         <activity
             android:name=".main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Quizr.main" >
+            android:theme="@style/Theme.Quizr.main">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -82,7 +89,7 @@
 
         <service
             android:name=".FCMService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

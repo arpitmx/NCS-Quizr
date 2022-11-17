@@ -95,4 +95,5 @@
         android:fontFamily="@font/mpsemibold"
         android:textAllCaps="false"
         android:text="Get NCS Goodies!🍻 " />
+
 </androidx.appcompat.widget.LinearLayoutCompat>

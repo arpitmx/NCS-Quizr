@@ -60,8 +60,7 @@ class FCMService : FirebaseMessagingService(){
 
                 if(message.data["ringAlarm"] == "true"){
                     Log.i("SellerFirebaseService ","Ring ring ")
-
-                   setAlarm2()
+                       setAlarm2()
 
                 }
 
@@ -147,7 +146,7 @@ class FCMService : FirebaseMessagingService(){
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5 * 1000,pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 30 * 1000,pendingIntent)
 
 
     }

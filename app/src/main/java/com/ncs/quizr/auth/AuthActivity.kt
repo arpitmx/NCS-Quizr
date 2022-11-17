@@ -32,6 +32,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ncs.quizr.main.MainActivity
 import com.ncs.quizr.R
+import com.ncs.quizr.admin.AdminActivity
 import com.ncs.quizr.databinding.ActivityAuthBinding
 
 
@@ -256,6 +257,7 @@ class AuthActivity : AppCompatActivity() {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
+                Toast.makeText(this, "Failed due to error code : ${e.message}", Toast.LENGTH_SHORT).show()
                 disableProgress(1)
             }
         }
@@ -271,7 +273,11 @@ class AuthActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val account: FirebaseUser = auth.getCurrentUser()!!
+                    if (account.email=="fourtytwogamer@gmail.com"){
+                        startActivity(Intent(this,AdminActivity::class.java))
+                    }else {
                     updateUI(account)
+                    }
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -322,13 +328,19 @@ class AuthActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser != null){
 
+
+
             val isFormCompleted = sharedPref.getBoolean("isFormComplete",false)
             if (isFormCompleted){
                 startActivity(Intent(this, MainActivity::class.java))
                 Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show()
                 finish()
             }else {
+                if (currentUser.email=="fourtytwogamer@gmail.com"){
+                    startActivity(Intent(this, AdminActivity::class.java))
+                }else {
                 updateUI(currentUser)
+            }
             }
 
 

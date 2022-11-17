@@ -14,17 +14,69 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/white"
-        android:text="Programming Club"
+        android:text="NCS"
         android:fontFamily="@font/mpsemibold"
-        android:textSize="20dp"
+        android:textSize="22dp"
         android:elevation="5dp"
         android:textColor="@color/light_blue_600"
         android:gravity="center"
         />
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+       android:id="@+id/linearProg"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:indeterminate="false"
+
+
+        />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/loaderView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:visibility="gone"
+        android:background="@drawable/button_white_curved"
+        >
+
+        <TextView
+            android:id="@+id/progText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:text="Loading Quiz..."
+            android:fontFamily="@font/mpregular"
+            android:textSize="24dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+
+            android:gravity="center"
+            />
+
+        <ProgressBar
+            android:id="@+id/loader"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="56dp"
+            android:indeterminateTint="@color/qblue"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notice" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ScrollView
+        android:id="@+id/quizView"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         >
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -32,16 +84,31 @@
         android:orientation="vertical"
 
         >
+
+
         <TextView
             android:id="@+id/questionNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="60dp"
-            android:background="@drawable/button_white_curved"
             android:text="Question 1"
             android:fontFamily="@font/mpsemibold"
-            android:textSize="24dp"
+            android:textSize="30dp"
             android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/timeleftText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="30dp"
+            android:text="25 sec left"
+            android:fontFamily="@font/mpregular"
+            android:textSize="18dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
 
@@ -192,6 +259,21 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             />
+
+        <include
+            android:id="@+id/auth_footer"
+            layout="@layout/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+
+            app:layout_constraintStart_toStartOf="parent" />
+
+
     </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 
