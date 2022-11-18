@@ -15,6 +15,11 @@ package com.ncs.quizr.dataClasses
      inner class queStatus {
          val currentQue: String = "CURRENT_QUES"
          val index : String = "INDEX"
+         val correctSub : String = "CORRECT_SUBS"
+         val totalSub : String = "TOTAL_SUB"
+         val winner : String = "WINNER"
+         val submitters : String = "SUBMITTERS"
+
 
      }
 

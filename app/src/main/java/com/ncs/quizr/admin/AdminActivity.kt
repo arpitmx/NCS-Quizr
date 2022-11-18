@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.ncs.quizr.R
+import com.ncs.quizr.dataClasses.Question
+import com.ncs.quizr.dataClasses.Questions
 import com.ncs.quizr.dataClasses.QuizModelConstants
 import com.ncs.quizr.dataClasses.realTimeDatabaseRefPaths
 import com.ncs.quizr.databinding.ActivityAdminBinding
@@ -25,6 +27,8 @@ class AdminActivity : AppCompatActivity() {
     val mc: QuizModelConstants = QuizModelConstants()
     lateinit var sharedPref : SharedPreferences
     lateinit var editor: SharedPreferences.Editor
+    var currentQueIndex :String = "-1"
+    var questionList : ArrayList<Question> = Questions().getQuestions()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,22 +39,75 @@ class AdminActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences("admin", MODE_PRIVATE)
         editor = sharedPref.edit()
 
+        model.init()
         initViews()
         initQuiz()
     }
 
     private fun initQuiz() {
+        var lastQueIndex = sharedPref.getString("lastQueIndex","null")
+
+        if (lastQueIndex!="null"){
+            setQuestionAtIndex(lastQueIndex!!)
+
+            editor.putString("lastQueIndex",lastQueIndex)
+            editor.apply()
+            editor.commit()
+        }else{
+
+        currentQueIndex = "1"
+        editor.putString("lastQueIndex","1")
+        editor.apply()
+        editor.commit()
+            setQuestionAtIndex(currentQueIndex)
+
+        }
+
 
     }
 
     fun vibrate(){
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
         vibrator.vibrate(100)
     }
-    private fun initViews() {
-        dialog = BottomSheetDialog(this)
-        model.init()
 
+    fun setQuestionAtIndex(index:String){
+        currentQueIndex = index
+        model.setQuestion(index)
+        setQuizTextViewDetails()
+        model.getIsQueSetAtIndex().observe(this){
+            if (it == 200){
+                Toast.makeText(this, "Question ${index} set!", Toast.LENGTH_SHORT).show()
+                binding.questionIndexEditBox.text.clear()
+            }else {
+                Toast.makeText(this, "Failure setting que ${index} set!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun setQuizTextViewDetails(){
+        val question = questionList.get(currentQueIndex.toInt())
+        binding.quizDetailTextView.text =
+            "Quiz details :\n\n Question No. : ${currentQueIndex} \n Club : ${question.club} \n Question : ${question.question}"
+
+
+
+    }
+
+    private fun initViews() {
+
+        initQuiz()
+
+        model.getTotalSubs()
+
+        model.getTotalSubLiveData().observe(this){
+            binding.submitted.text= "Total Submissions : ${it}"
+        }
+
+
+        dialog = BottomSheetDialog(this)
+
+        model.setHighest()
         model.getStatusResponse().observe(this){
             binding.qstatus.text= "Quiz Status :  ${it}"
         }
@@ -59,17 +116,12 @@ class AdminActivity : AppCompatActivity() {
             vibrate()
           if (binding.questionIndexEditBox.text.isNotEmpty()){
                 val index = binding.questionIndexEditBox.text.toString()
-                model.setQuestion(index)
-                model.getIsQueSetAtIndex().observe(this){
-                    if (it == 200){
-                        Toast.makeText(this, "Question ${index} set!", Toast.LENGTH_SHORT).show()
-                        binding.questionIndexEditBox.text.clear()
-                    }else {
-                        Toast.makeText(this, "Failure setting que ${index} set!", Toast.LENGTH_SHORT).show()
-
-                    }
-                }
+                setQuestionAtIndex(index)
             }
+        }
+
+        model.getHighestPlayer().observe(this){
+            binding.highestScorer.text = "Highest scorer : ${it.toString()}"
         }
 
         binding.quizStatus.setOnClickListener{

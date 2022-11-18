@@ -1,6 +1,7 @@
 package com.ncs.quizr.admin
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.dataClasses.QuizModelConstants
 import com.ncs.quizr.dataClasses.realTimeDatabaseRefPaths
+
 
 class AdminActivityViewModel : ViewModel() {
 
@@ -23,6 +25,8 @@ class AdminActivityViewModel : ViewModel() {
     private var currentQuestionIndex = MutableLiveData<Int>()
     private var opStatus = MutableLiveData<String>()
     private var isQueSetLiveData = MutableLiveData<Int>()
+    private var bestPlayerLiveData = MutableLiveData<String>()
+    private var totalSubsLiveData = MutableLiveData<String>()
 
 
     private val statusListner = object : ValueEventListener {
@@ -77,6 +81,53 @@ class AdminActivityViewModel : ViewModel() {
                         }
     }
 
+    private val totalSubmissionListner = object : ValueEventListener {
+
+
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            val totalSubmisisons = dataSnapshot.value
+            totalSubsLiveData.value = totalSubmisisons.toString()
+
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.d(TAG, "Value is: Error")
+
+        }
+
+
+    }
+
+    fun getTotalSubs(){
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().totalSub).addValueEventListener(totalSubmissionListner)
+    }
+    fun getTotalSubLiveData():LiveData<String>{
+        return totalSubsLiveData
+    }
+
+    fun setHighest(){
+
+        val mDatabaseHighestPlayer: Query =
+            quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().correctSub).orderByChild("score").limitToFirst(1)
+
+        mDatabaseHighestPlayer.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (childSnapshot in dataSnapshot.children) {
+                    val Key = childSnapshot.key
+                    bestPlayerLiveData.value = Key.toString()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                throw databaseError.toException() // don't swallow errors
+            }
+        })
+
+
+//        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().correctSub)
+//            .addValueEventListener()
+    }
 
     fun setQuestion(index: String){
         quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().index)
@@ -86,6 +137,28 @@ class AdminActivityViewModel : ViewModel() {
             }.addOnFailureListener {
                 isQueSetLiveData.value = 404
             }
+
+        resetValues()
+    }
+
+    fun resetValues(){
+
+        //Total submissions = 0
+        quesRef.child(fbref.queStatus().currentQue)
+            .child(fbref.queStatus().totalSub).setValue(0)
+        // Winner = reset
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().winner).
+            child("email").setValue("")
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().winner).
+            child("username").setValue("")
+        // Correct subs to reset
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().correctSub)
+            .removeValue()
+
+
+
+
+
     }
 
     fun getStatusResponse(): LiveData<String> {
@@ -93,6 +166,10 @@ class AdminActivityViewModel : ViewModel() {
     }
     fun getIsQueSetAtIndex(): LiveData<Int> {
         return isQueSetLiveData
+    }
+
+    fun getHighestPlayer(): LiveData<String> {
+        return bestPlayerLiveData
     }
 
 }

@@ -5,9 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+   android:background="@color/black"
     android:gravity="center"
     tools:context=".admin.AdminActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
     <TextView
         android:id="@+id/qstatus"
         android:layout_width="match_parent"
@@ -18,6 +29,7 @@
         android:background="@color/black"
         android:textColor="@color/white"
         android:textSize="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toTopOf="@+id/button4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,15 +63,17 @@
         />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/quizDetailTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="\nIndex:\nclub:\nQuestion:\n"
         android:gravity="center"
         android:minHeight="200dp"
         android:background="@color/black"
+        android:padding="20dp"
         android:textColor="@color/white"
-        android:textSize="20dp"
+        android:textSize="18dp"
+        android:fontFamily="@font/mpregular"
         app:layout_constraintBottom_toTopOf="@+id/button4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,6 +100,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.356" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/highestScorer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Highest : "
+            android:gravity="center"
+            android:padding="5dp"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.356" />
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -117,12 +153,23 @@
          />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <Button
+            android:id="@+id/nominate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nominate round Winner"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button4" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         >
     <Button
         android:id="@+id/prevQue"
@@ -157,9 +204,10 @@
         android:layout_height="wrap_content"
         android:text="Quiz Status"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
-
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
 </androidx.appcompat.widget.LinearLayoutCompat>

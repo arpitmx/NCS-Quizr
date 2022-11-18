@@ -64,6 +64,7 @@
             android:layout_marginBottom="56dp"
             android:indeterminateTint="@color/qblue"
             android:visibility="visible"
+            android:indeterminate="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,19 +102,7 @@
             android:gravity="center"
             />
 
-        <TextView
-            android:id="@+id/timeleftText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="30dp"
-            android:text="25 sec left"
-            android:fontFamily="@font/mpregular"
-            android:textSize="18dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
 
-            android:gravity="center"
-            />
         <TextView
             android:id="@+id/questionBox"
             android:layout_width="match_parent"
