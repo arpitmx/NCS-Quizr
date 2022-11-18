@@ -20,12 +20,30 @@
 
 
     <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/mpsemibold"
+        android:gravity="center_vertical"
+        android:text="v1.0"
+        android:textColor="@color/qblue"
+        android:paddingTop="5dp"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/title"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:gravity="center_vertical"
         android:fontFamily="@font/mpsemibold"
+        android:gravity="center_vertical"
         android:text="Quizr"
         android:textColor="@color/qblue"
         android:textSize="28dp"

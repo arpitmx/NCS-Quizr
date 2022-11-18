@@ -1,21 +1,24 @@
 package com.ncs.quizr.main
 
 import android.app.AlarmManager
+import android.app.Dialog
 import android.app.PendingIntent
 import android.content.*
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.appcompat.widget.AppCompatDrawableManager
+import androidx.appcompat.widget.AppCompatButton
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.common.config.GservicesValue.value
@@ -26,13 +29,13 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ncs.quizr.AlarmBroadcast
 import com.ncs.quizr.AlarmService
+import com.ncs.quizr.R
 import com.ncs.quizr.dataClasses.realTimeDatabaseRefPaths
 import com.ncs.quizr.dataClasses.sharedPrefsKeys
 import com.ncs.quizr.databinding.ActivityMainBinding
 import com.ncs.quizr.insta.GoodiesActivity
 import com.ncs.quizr.quiz.QuizActivity
 import java.util.*
-import com.ncs.quizr.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,9 +48,10 @@ class MainActivity : AppCompatActivity() {
     val pref: sharedPrefsKeys = sharedPrefsKeys()
     val fbref: realTimeDatabaseRefPaths = realTimeDatabaseRefPaths()
 
-
+    lateinit var dialog :Dialog
     private lateinit var db: FirebaseDatabase
     private lateinit var ref : DatabaseReference
+    private lateinit var updateRef : DatabaseReference
 
     val TAG = "MainActivity"
 
@@ -130,16 +134,17 @@ class MainActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences(pref.sharedPrefID, MODE_PRIVATE)
         db = Firebase.database
         ref = db.getReference(fbref.opConfig)
+        updateRef = db.getReference(fbref.update().appConfig).child(fbref.update().Update)
         binding.progressBar.visibility = View.VISIBLE
-
-
+        dialog = Dialog(this)
+        listenForUpdates()
         initViews()
         getToken()
         subscribeToTopics()
 
 
 
-
+        binding.startQuizbtn.isClickable = false
         binding.getDataBtn.setOnClickListener{
             startActivity(Intent(this, GoodiesActivity::class.java))
         }
@@ -148,6 +153,55 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, QuizActivity::class.java))
         }
 
+    }
+
+    private fun showDialog(link: String) {
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+
+        dialog.setContentView(R.layout.back_dialog)
+
+        val yesBtn = dialog.findViewById(R.id.btn_yes) as AppCompatButton
+        val noBtn = dialog.findViewById(R.id.btn_no) as AppCompatButton
+        val tvBody = dialog.findViewById(R.id.tvBody) as TextView
+        val tvTitle = dialog.findViewById(R.id.tvTitle) as TextView
+        yesBtn.text = "Update"
+        noBtn.visibility = View.GONE
+        yesBtn.setBackgroundColor(resources.getColor(R.color.light_blue_600))
+        tvTitle.text = "New Update"
+        tvBody.text = "A new update of Quizr has been released, it is mandatory to update to the latest version to participate!"
+        yesBtn.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            startActivity(browserIntent)
+            finish()
+        }
+
+        dialog.show()
+
+    }
+
+    private val updateListner= object : ValueEventListener {
+
+
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            val updateLink = dataSnapshot.value
+            //Toast.makeText(this@MainActivity, updateLink.toString(), Toast.LENGTH_SHORT).show()
+            if (updateLink != fbref.update().noUpdateLink ){
+                showDialog(updateLink.toString())
+            }
+
+        }
+        override fun onCancelled(error: DatabaseError) {
+            Log.d(TAG, "Error: ${error}")
+
+        }
+    }
+
+
+    fun listenForUpdates(){
+         updateRef.child(fbref.update().updateLink).addValueEventListener(updateListner)
     }
 
     fun initViews(){

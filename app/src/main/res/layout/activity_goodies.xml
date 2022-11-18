@@ -38,8 +38,8 @@
         android:text="Follow these steps to get a chance to win \n super cool goodies!
         \n\n
           Step 1: Open instagram through \nour app \n\n
-          Step 2: Like the latest 5 posts on HackNCS Insta page \n\n
-          Step 3: Share our latest 5 posts among \n5 friends or group \n\n Step 4: Drop 'DONE QUIZR TASKS' in Direct Message @HackNCS Insta when \n finished all tasks \n\n  Step 5: Close the app and wait for our announcements. \n\n\n\n  *NOTE : Step 1 is mandatory for different validations, otherwise you won't be eligible for goodies."
+          Step 2: Follow and like the latest posts on HackNCS Insta page \n\n
+          Step 3: Drop 'DONE QUIZR TASKS' in Direct Message @HackNCS Insta when \n finished all tasks and close the app.  \n\n\n\n  *NOTE : Step 1 is mandatory for different validations, otherwise you won't be eligible for goodies."
         android:fontFamily="@font/mpregular"
         android:layout_gravity="center"
         android:textAlignment="center"

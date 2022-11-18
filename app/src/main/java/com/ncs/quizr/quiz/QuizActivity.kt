@@ -97,9 +97,9 @@ class QuizActivity : AppCompatActivity() {
         questionsList = queRepo.getQuestions()
         model = ViewModelProvider(this)[QuizActivityViewModel::class.java]
 
+        model.initModel()
         loader(1)
         initViews()
-        model.initModel()
         doQuizValidation()
         loadCurrentQuestion()
 
@@ -182,6 +182,7 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
+    private var currentIndex : Int  = -1
     fun vibrate(){
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         vibrator.vibrate(500)
@@ -193,6 +194,7 @@ class QuizActivity : AppCompatActivity() {
 
             if (index>0&&index<=20){
                 val question = questionsList.get(index-1)
+                currentIndex = index
                 setQuizView(question)
 
             }else{
@@ -290,12 +292,14 @@ class QuizActivity : AppCompatActivity() {
                 Toast.makeText(this, "This is an super question", Toast.LENGTH_SHORT).show()
                 lobbyIntent.putExtra("isSuper", true)
                 lobbyIntent.putExtra("index", question.Qindex)
+                lobbyIntent.putExtra("timeout",false)
                 startActivity(lobbyIntent)
                 finish()
 
             } else {
 
                 if (question.isMCQ) {
+
                     val option = question.ans
                     val selectedOption: Int = mcqGroup.checkedRadioButtonId
                     val rbtn = findViewById<RadioButton>(selectedOption)
@@ -316,6 +320,7 @@ class QuizActivity : AppCompatActivity() {
                         lobbyIntent.putExtra("index", question.Qindex)
                         lobbyIntent.putExtra("time", timeElapsed)
                         lobbyIntent.putExtra("reOpened", false)
+                        lobbyIntent.putExtra("timeout",false)
 
 
                         startActivity(lobbyIntent)
@@ -331,7 +336,7 @@ class QuizActivity : AppCompatActivity() {
                     val ans = question.ans
                     if (!binding.answerBox.text.isBlank()) {
                         val response = binding.answerBox.text.toString()
-                        if (response == ans) {
+                        if (response.contains(ans)) {
                             stopTimer()
                             lobbyIntent.putExtra("isCorrect", true)
 
@@ -345,6 +350,7 @@ class QuizActivity : AppCompatActivity() {
                         lobbyIntent.putExtra("index", question.Qindex)
                         lobbyIntent.putExtra("time", timeElapsed)
                         lobbyIntent.putExtra("reOpened", false)
+                        lobbyIntent.putExtra("timeout",false)
 
 
                         startActivity(lobbyIntent)
@@ -421,6 +427,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     fun initViews(){
+        model.initStatus()
         clubTitle = binding.clubTitle
         questionBox = binding.questionBox
         questionNumber = binding.questionNum
@@ -433,7 +440,33 @@ class QuizActivity : AppCompatActivity() {
 
     }
 
+    fun checkTimeout(){
+        model.getQueStatus().observe(this){
+            if (it ==0){
+
+                val lobbyIntent = Intent(this, LobbyActivity::class.java)
+                Toast.makeText(this, "timeout", Toast.LENGTH_SHORT).show()
+                lobbyIntent.putExtra("isSuper", false)
+                lobbyIntent.putExtra("index", currentIndex)
+                lobbyIntent.putExtra("reOpened", false)
+                lobbyIntent.putExtra("timeout",true)
+                lobbyIntent.putExtra("time", timeElapsed)
+
+
+                startActivity(lobbyIntent)
+                finish()
+
+            }
+        }
+    }
+
+
+
     fun doQuizValidation(){
+
+        checkTimeout()
+
+
         model.observeQuizValidity().observe(this) { responseCode ->
             when(responseCode){
                 constants.Validity().running-> {

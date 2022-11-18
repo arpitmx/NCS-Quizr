@@ -7,9 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.dataClasses.QuizModelConstants
+import com.ncs.quizr.dataClasses.leaderboardUser
 import com.ncs.quizr.dataClasses.realTimeDatabaseRefPaths
+import kotlin.math.log
 
 
 class AdminActivityViewModel : ViewModel() {
@@ -27,6 +30,7 @@ class AdminActivityViewModel : ViewModel() {
     private var isQueSetLiveData = MutableLiveData<Int>()
     private var bestPlayerLiveData = MutableLiveData<String>()
     private var totalSubsLiveData = MutableLiveData<String>()
+    private var winnerDetailLiveData = MutableLiveData<ArrayList<String>>()
 
 
     private val statusListner = object : ValueEventListener {
@@ -106,17 +110,24 @@ class AdminActivityViewModel : ViewModel() {
         return totalSubsLiveData
     }
 
+    fun getWinner() : LiveData<ArrayList<String>>{
+        return winnerDetailLiveData
+    }
+
     fun setHighest(){
 
         val mDatabaseHighestPlayer: Query =
-            quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().correctSub).orderByChild("score").limitToFirst(1)
+            quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().correctSub).child(fbref.queStatus().submitters).orderByChild("score").limitToFirst(1)
 
         mDatabaseHighestPlayer.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (childSnapshot in dataSnapshot.children) {
-                    val Key = childSnapshot.key
-                    bestPlayerLiveData.value = Key.toString()
+                    val key = childSnapshot.key
+                    val email = childSnapshot.child("email").value
+                    winnerDetailLiveData.value = arrayListOf(key.toString(),email.toString())
+                    bestPlayerLiveData.value = childSnapshot.key.toString()
                 }
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -170,6 +181,27 @@ class AdminActivityViewModel : ViewModel() {
 
     fun getHighestPlayer(): LiveData<String> {
         return bestPlayerLiveData
+    }
+
+    fun postWinner(username: String, email: String) {
+
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().winner).
+        child("email").setValue(email)
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().winner).
+        child("username").setValue(username)
+
+
+    }
+
+    fun setQuesStatus(status:Int) {
+        if (status == 1){
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().questionStatus)
+        .setValue(fbref.queStatus().counting)
+        }else if (status == 0){
+            quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().questionStatus)
+                .setValue(fbref.queStatus().over)
+        }
+
     }
 
 }

@@ -147,10 +147,11 @@ class AuthActivity : AppCompatActivity() {
                     "emailID" to email,
                     "photoURL" to userAccount.photoUrl,
                     "phone" to pno,
+                    "version" to "1.0"
 
                 )
 
-                DB.collection("users").document(email)
+                DB.collection("users").document(email).collection("creds").document("account")
                     .set(userData)
                     .addOnSuccessListener { documentReference ->
 
@@ -205,7 +206,11 @@ class AuthActivity : AppCompatActivity() {
 
 
     fun inputsGood(userName: String, userCollegeID: String, pno: String) : Boolean{
-        return !(userName.isBlank() || userCollegeID.isBlank() || pno.isBlank())
+        if ( !(userName.isBlank() || userCollegeID.isBlank() || pno.isBlank())){
+            return pno.length==10
+        }else {
+            return false
+        }
     }
 
 
@@ -231,8 +236,8 @@ class AuthActivity : AppCompatActivity() {
 
         FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
             if(result != null){
-                DB.collection("users").document(email)
-                    .set(hashMapOf("fcmToken" to result))
+                DB.collection("users").document(email).collection("backend")
+                    .document("Token").set(hashMapOf("fcmToken" to result))
 
                 Log.d("MainActivity", "Token : $result")
                 // DO your thing with your firebase token

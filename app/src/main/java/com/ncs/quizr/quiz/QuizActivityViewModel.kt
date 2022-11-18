@@ -28,6 +28,7 @@ class QuizActivityViewModel : ViewModel() {
 
     private var quizStatusResponseCode = MutableLiveData<Int>()
     private var currentQuestionIndex = MutableLiveData<Int>()
+    private var queStatusLiveData = MutableLiveData<Int>()
 
     private val validityListner = object : ValueEventListener {
 
@@ -69,6 +70,34 @@ class QuizActivityViewModel : ViewModel() {
         }
     }
 
+    private val queStatusListner= object : ValueEventListener {
+
+
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            val index = dataSnapshot.getValue<String>()
+            Log.d(TAG, "Que status : ${index}")
+            if (index == fbref.queStatus().over){
+                queStatusLiveData.value = 0
+            }else {
+                queStatusLiveData.value = 1
+            }
+        }
+        override fun onCancelled(error: DatabaseError) {
+            Log.d(TAG, "Error: ${error}")
+            queStatusLiveData.value = -404
+        }
+    }
+
+    fun initStatus(){
+        quesRef.child(fbref.queStatus().currentQue).
+        child(fbref.queStatus().questionStatus)
+            .addValueEventListener(queStatusListner)
+    }
+
+    fun getQueStatus(): LiveData<Int>{
+        return queStatusLiveData
+    }
 
     fun initModel() {
         db = Firebase.database

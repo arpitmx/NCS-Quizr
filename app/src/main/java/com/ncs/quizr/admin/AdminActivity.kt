@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Vibrator
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
@@ -60,7 +61,6 @@ class AdminActivity : AppCompatActivity() {
         editor.apply()
         editor.commit()
             setQuestionAtIndex(currentQueIndex)
-
         }
 
 
@@ -75,9 +75,17 @@ class AdminActivity : AppCompatActivity() {
         currentQueIndex = index
         model.setQuestion(index)
         setQuizTextViewDetails()
+        model.setQuesStatus(1)
+
+        editor.putString("lastQueIndex",currentQueIndex)
+        editor.apply()
+        editor.commit()
+        timer.start()
+        binding.highestScorer.text="Fastest scorer: "
+
         model.getIsQueSetAtIndex().observe(this){
             if (it == 200){
-                Toast.makeText(this, "Question ${index} set!", Toast.LENGTH_SHORT).show()
+               // Toast.makeText(this, "Question ${index} set!", Toast.LENGTH_SHORT).show()
                 binding.questionIndexEditBox.text.clear()
             }else {
                 Toast.makeText(this, "Failure setting que ${index} set!", Toast.LENGTH_SHORT).show()
@@ -86,7 +94,7 @@ class AdminActivity : AppCompatActivity() {
     }
 
     fun setQuizTextViewDetails(){
-        val question = questionList.get(currentQueIndex.toInt())
+        val question = questionList.get(currentQueIndex.toInt()-1)
         binding.quizDetailTextView.text =
             "Quiz details :\n\n Question No. : ${currentQueIndex} \n Club : ${question.club} \n Question : ${question.question}"
 
@@ -94,23 +102,69 @@ class AdminActivity : AppCompatActivity() {
 
     }
 
+
+    private val timer = object: CountDownTimer(30000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            binding.countDown.text = "${millisUntilFinished/1000} sec left"
+        }
+
+        override fun onFinish() {
+            binding.countDown.text = "Timeout, player nominated."
+            nominate()
+            model.setQuesStatus(0)
+        }
+    }
+
+    private fun nominate(){
+        model.getWinner().observe(this@AdminActivity){
+            val username = it[0]
+            val email = it[1]
+
+            model.postWinner(username,email)
+            Toast.makeText(this@AdminActivity, "Winner broadcasted", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+
+
+
     private fun initViews() {
 
         initQuiz()
 
         model.getTotalSubs()
-
         model.getTotalSubLiveData().observe(this){
             binding.submitted.text= "Total Submissions : ${it}"
         }
 
 
         dialog = BottomSheetDialog(this)
-
         model.setHighest()
         model.getStatusResponse().observe(this){
             binding.qstatus.text= "Quiz Status :  ${it}"
         }
+
+
+        binding.prevQue.setOnClickListener{
+            if (Integer.parseInt(currentQueIndex)-1>=1){
+                setQuestionAtIndex((Integer.parseInt(currentQueIndex)-1).toString())
+            }else {
+                Toast.makeText(this,"This was the first question", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.nextQue.setOnClickListener{
+
+            if (Integer.parseInt(currentQueIndex)+1<=10){
+            setQuestionAtIndex((Integer.parseInt(currentQueIndex)+1).toString())
+            }else {
+                Toast.makeText(this,"This was last question", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+
+
 
         binding.setQue.setOnClickListener{
             vibrate()
@@ -121,7 +175,7 @@ class AdminActivity : AppCompatActivity() {
         }
 
         model.getHighestPlayer().observe(this){
-            binding.highestScorer.text = "Highest scorer : ${it.toString()}"
+            binding.highestScorer.text = "Fastest scorer : ${it.toString()}"
         }
 
         binding.quizStatus.setOnClickListener{

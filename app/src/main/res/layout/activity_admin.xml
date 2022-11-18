@@ -111,7 +111,7 @@
             android:id="@+id/highestScorer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Highest : "
+            android:text="Fastest scorer : "
             android:gravity="center"
             android:padding="5dp"
             android:background="@color/black"
@@ -122,6 +122,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.356" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/countDown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Count down: 30 sec"
+            android:gravity="center"
+            android:padding="5dp"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.356" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
