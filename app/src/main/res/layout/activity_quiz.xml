@@ -98,7 +98,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-
+            android:textColor="#1B1B1B"
             android:gravity="center"
             />
 
@@ -131,6 +131,7 @@
             android:textSize="22dp"
             android:hint="Answer here in one word"
             android:gravity="center"
+            android:textColorHint="#646464"
             android:visibility="gone"
             android:padding="10dp"
             android:textColor="@color/black_100"

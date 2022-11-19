@@ -9,11 +9,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -21,19 +17,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
-import com.ncs.quizr.main.MainActivity
 import com.ncs.quizr.R
 import com.ncs.quizr.admin.AdminActivity
 import com.ncs.quizr.databinding.ActivityAuthBinding
+import com.ncs.quizr.main.MainActivity
 
 
 class AuthActivity : AppCompatActivity() {
@@ -46,7 +46,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var sharedPref : SharedPreferences
     private lateinit var editor : SharedPreferences.Editor
     private lateinit var authViewModel : AuthViewModel
-    val DB = Firebase.firestore
+    val database = Firebase.firestore
     lateinit var dialog : BottomSheetDialog
 
 
@@ -84,6 +84,11 @@ class AuthActivity : AppCompatActivity() {
 
 
 
+
+        if (auth.currentUser?.email =="fourtytwogamer@gmail.com"){
+            startActivity(Intent(this, AdminActivity::class.java))
+            finish()
+        }
     }
 
     private fun showFormDialog(userAccount: FirebaseUser){
@@ -151,7 +156,7 @@ class AuthActivity : AppCompatActivity() {
 
                 )
 
-                DB.collection("users").document(email).collection("creds").document("account")
+                database.collection("users").document(email).collection("creds").document("account")
                     .set(userData)
                     .addOnSuccessListener { documentReference ->
 
@@ -236,7 +241,7 @@ class AuthActivity : AppCompatActivity() {
 
         FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
             if(result != null){
-                DB.collection("users").document(email).collection("backend")
+                database.collection("users").document(email).collection("backend")
                     .document("Token").set(hashMapOf("fcmToken" to result))
 
                 Log.d("MainActivity", "Token : $result")
@@ -281,7 +286,7 @@ class AuthActivity : AppCompatActivity() {
                     if (account.email=="fourtytwogamer@gmail.com"){
                         startActivity(Intent(this,AdminActivity::class.java))
                     }else {
-                    updateUI(account)
+                    isUserExists(account)
                     }
                 } else {
                     // If sign in fails, display a message to the user.
@@ -327,33 +332,74 @@ class AuthActivity : AppCompatActivity() {
     }
 
 
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if(currentUser != null){
+    fun addPref(username:String,collegeID:String,phone:String ,account: FirebaseUser){
 
+        editor.putString("userName", username)
+        editor.putString("collegeID", collegeID)
+        editor.putString("uID", account.uid)
+        editor.putString("email", account.email)
+        editor.putString("profileurl", account.photoUrl.toString())
+        editor.putString("phone", phone)
+        editor.putBoolean("isFormComplete", true)
 
-
-            val isFormCompleted = sharedPref.getBoolean("isFormComplete",false)
-            if (isFormCompleted){
-                startActivity(Intent(this, MainActivity::class.java))
-                Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show()
-                finish()
-            }else {
-                if (currentUser.email=="fourtytwogamer@gmail.com"){
-                    startActivity(Intent(this, AdminActivity::class.java))
-                }else {
-                updateUI(currentUser)
-            }
-            }
-
-
-
-        }
+        editor.apply()
+        editor.commit()
     }
 
 
 
+    private fun isUserExists(account:FirebaseUser){
 
+        database.collection("users").document(account.email.toString()).collection("creds")
+            .document("account").get().addOnSuccessListener{
+
+                val emailFB = it.get("emailID").toString()
+
+                if (!sharedPref.getBoolean("isFormComplete",false)) {
+
+                    val username = it.get("username").toString()
+                    val collegeID = it.get("collegeID").toString()
+                    val phone = it.get("phone").toString()
+                    addPref(username, collegeID, phone, account)
+                }
+
+             //   Toast.makeText(this, "emailFB: ${emailFB}", Toast.LENGTH_SHORT).show()
+
+                if (emailFB == account.email.toString()){
+                startActivity(Intent(this, MainActivity::class.java))
+                Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show()
+                finish()
+
+
+            }else {
+                updateUI(account)
+            }
+            }
+            }
+
+
+
+
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+
+
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            if (sharedPref.getBoolean("isFormComplete",false)){
+                startActivity(Intent(this, MainActivity::class.java))
+                Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show()
+                finish()
+            }else {
+          // isUserExists(currentUser)
+            }
+        }
+
+
+
+    }
 }
+
+
+

@@ -2,6 +2,7 @@ package com.ncs.quizr.quiz
 
 import android.R.id
 import android.app.Dialog
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -11,10 +12,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.datatransport.runtime.dagger.internal.SingleCheck
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.R
 import com.ncs.quizr.dataClasses.QuizModelConstants
@@ -36,6 +39,12 @@ class LobbyActivity : AppCompatActivity() {
     val TAG = "LobbyActivity"
     lateinit var extras : Bundle
     lateinit var binding:ActivityLobbyBinding
+    lateinit var usernameF:String
+    private lateinit var model: QuizActivityViewModel
+    val constants : QuizModelConstants = QuizModelConstants()
+    private lateinit var quesRef: DatabaseReference
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,13 +54,19 @@ class LobbyActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences(prefdb.sharedPrefID, MODE_PRIVATE)
         editor = sharedPref.edit()
+        model = ViewModelProvider(this)[QuizActivityViewModel::class.java]
 
 
-
+        usernameF= sharedPref.getString(prefdb.username,"false").toString()
+        Log.d(TAG, usernameF)
         db = Firebase.database
         ref = db.getReference(fbref.quizConfig).child(fbref.queStatus().currentQue)
+        quesRef = db.getReference(fbref.quizConfig)
+
         extras = intent.extras!!
 
+        model.initModel()
+        doQuizValidation()
         initViews()
 
 
@@ -87,11 +102,56 @@ class LobbyActivity : AppCompatActivity() {
     }
 
 
+    fun startQuizActivity(){
+        startActivity(Intent(this@LobbyActivity,QuizActivity::class.java))
+        finish()
+    }
+
+    private val currentQuizQueListner= object : ValueEventListener {
+
+
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            Log.d(TAG, "Index: ${dataSnapshot.value}")
+            if (dataSnapshot.value==true) {
+               startQuizActivity()
+           }
+        }
+        override fun onCancelled(error: DatabaseError) {
+            Log.d(TAG, "Error: ${error}")
+        }
+    }
+
+    fun loadCurrentQuestion(){
+        quesRef.child(fbref.queStatus().currentQue).
+        child(fbref.queStatus().change_que)
+            .addValueEventListener(currentQuizQueListner)
+
+    }
+
+
+
+
+
     private val winnerListener = object : ValueEventListener {
 
         override fun onDataChange(snapshot: DataSnapshot) {
-                val username = snapshot.child("email")
-                val email = snapshot.child("username")
+
+                val email = snapshot.child("email").value.toString()
+                val username = snapshot.child("username").value.toString()
+            Log.d(TAG, "EMAIL FB : ${email} username FB: ${username}")
+            Log.d(TAG, "EMAIL Local : ${email} username Local : ${usernameF}")
+            if (email!=""&& username!=""){
+                if (username==usernameF && email == Firebase.auth.currentUser!!.email){
+                    Toast.makeText(this@LobbyActivity, "Winner!", Toast.LENGTH_SHORT).show()
+                    binding.winnerScreen.visibility = View.VISIBLE
+                    binding.winnerScreen.text = "Winner here \uD83D\uDC47 \n Username: ${username} \n Email : ${email}"
+                    binding.QuizStatdisplay.visibility = View.GONE
+                }else {
+                    binding.winnerScreen.visibility = View.GONE
+                    binding.QuizStatdisplay.visibility = View.VISIBLE
+                }
+            }
 
         }
 
@@ -103,15 +163,50 @@ class LobbyActivity : AppCompatActivity() {
 
     }
 
-    fun checkIfIamAWinner(){
-        ref.child(fbref.queStatus().winner).addValueEventListener(statusListner)
+    fun checkIfIamAWinner() {
+        ref.child(fbref.queStatus().winner).addValueEventListener(winnerListener)
 
     }
+
+
+
+
+    fun doQuizValidation(){
+
+
+
+
+        model.observeQuizValidity().observe(this) { responseCode ->
+            when(responseCode){
+                constants.Validity().running-> {
+                    // Toast.makeText(baseContext, "GO GO GO!", Toast.LENGTH_SHORT).show()
+                }
+                constants.Validity().notStarted->{
+                    Toast.makeText(baseContext, "Unauthorised Quiz,halt.", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                constants.Validity().finished->{
+                    Toast.makeText(baseContext, "Quiz ended by the admin!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                constants.Validity().error->{
+                    Toast.makeText(baseContext, "Technical error, restart!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                else ->{
+                    Toast.makeText(baseContext, "Invalid response code, restart!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        }
+    }
+
 
 
     private fun initViews() {
 
         checkIfIamAWinner()
+        loadCurrentQuestion()
         if (extras.getBoolean("timeout")){
             val timeTaken = extras.getLong("time")
             binding.isCorrect.text = "Time out!, better luck next time"

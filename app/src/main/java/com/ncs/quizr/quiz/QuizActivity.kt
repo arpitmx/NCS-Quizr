@@ -205,6 +205,8 @@ class QuizActivity : AppCompatActivity() {
 
         }
     }
+
+
     fun validDateReopen(question: Question){
 
         val lastQue = sharedPref.getString("lastIndex","-1")

@@ -1,6 +1,7 @@
 package com.ncs.quizr.admin
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,9 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.R
 import com.ncs.quizr.dataClasses.Question
 import com.ncs.quizr.dataClasses.Questions
@@ -30,19 +34,29 @@ class AdminActivity : AppCompatActivity() {
     lateinit var editor: SharedPreferences.Editor
     var currentQueIndex :String = "-1"
     var questionList : ArrayList<Question> = Questions().getQuestions()
+    private lateinit var quesRef: DatabaseReference
+    private lateinit var db: FirebaseDatabase
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        db = Firebase.database
         model = ViewModelProvider(this)[AdminActivityViewModel::class.java]
         sharedPref = getSharedPreferences("admin", MODE_PRIVATE)
         editor = sharedPref.edit()
+        quesRef = db.getReference(fbref.quizConfig)
 
         model.init()
         initViews()
         initQuiz()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
     private fun initQuiz() {
@@ -62,8 +76,6 @@ class AdminActivity : AppCompatActivity() {
         editor.commit()
             setQuestionAtIndex(currentQueIndex)
         }
-
-
     }
 
     fun vibrate(){
@@ -72,15 +84,19 @@ class AdminActivity : AppCompatActivity() {
     }
 
     fun setQuestionAtIndex(index:String){
+
         currentQueIndex = index
         model.setQuestion(index)
         setQuizTextViewDetails()
         model.setQuesStatus(1)
+        isNominated = false
 
         editor.putString("lastQueIndex",currentQueIndex)
         editor.apply()
         editor.commit()
         timer.start()
+
+
         binding.highestScorer.text="Fastest scorer: "
 
         model.getIsQueSetAtIndex().observe(this){
@@ -98,8 +114,6 @@ class AdminActivity : AppCompatActivity() {
         binding.quizDetailTextView.text =
             "Quiz details :\n\n Question No. : ${currentQueIndex} \n Club : ${question.club} \n Question : ${question.question}"
 
-
-
     }
 
 
@@ -115,16 +129,29 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
+    var isNominated = false
     private fun nominate(){
-        model.getWinner().observe(this@AdminActivity){
-            val username = it[0]
-            val email = it[1]
 
-            model.postWinner(username,email)
-            Toast.makeText(this@AdminActivity, "Winner broadcasted", Toast.LENGTH_SHORT).show()
+        val mDatabaseHighestPlayer: Query =
+            quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().correctSub).child(fbref.queStatus().submitters).orderByChild("score").limitToFirst(1)
 
+        mDatabaseHighestPlayer.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (childSnapshot in dataSnapshot.children) {
+
+                    val key = childSnapshot.key
+                    val email = childSnapshot.child("email").value
+                    model.postWinner(key.toString(), email.toString())
+
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                throw databaseError.toException() // don't swallow errors
+            }
+        })
         }
-    }
 
 
 
@@ -163,6 +190,9 @@ class AdminActivity : AppCompatActivity() {
         }
 
 
+        binding.leaderBoardbtn.setOnClickListener{
+            startActivity(Intent(this,LeaderBoardActivity::class.java))
+        }
 
 
 
@@ -210,6 +240,5 @@ class AdminActivity : AppCompatActivity() {
             }
 
 
-        }
-    }
-}
+        }}}
+

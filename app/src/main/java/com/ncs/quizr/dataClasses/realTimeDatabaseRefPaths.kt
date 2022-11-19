@@ -32,6 +32,9 @@ package com.ncs.quizr.dataClasses
          val questionStatus : String = "QUE_STATUS"
          val counting : String = "_COUNTING_"
          val over : String = "_OVER_"
+         val change_que : String = "CHANGE_QUE"
+
+
 
      }
 

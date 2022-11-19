@@ -18,28 +18,34 @@
         android:theme="@style/Theme.Quizr"
         tools:targetApi="31">
         <activity
+            android:screenOrientation="portrait"
+            android:name=".admin.LeaderBoardActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".quiz.LobbyActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".admin.AdminActivity"
             android:exported="false"
-            android:theme="@style/Theme.Quizr.admin"
-            >
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Quizr.admin">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".quiz.QuizActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Quizr.quiz">
             <meta-data
                 android:name="android.app.lib_name"
@@ -57,21 +63,20 @@
             android:resource="@color/qblue" />
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".AlarmActivity"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name=".insta.GoodiesActivity"
-            android:screenOrientation="portrait"
-
-            />
         <activity
-            android:screenOrientation="portrait"
+            android:name=".insta.GoodiesActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".insta.InstaActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Quizr.insta">
             <meta-data
                 android:name="android.app.lib_name"

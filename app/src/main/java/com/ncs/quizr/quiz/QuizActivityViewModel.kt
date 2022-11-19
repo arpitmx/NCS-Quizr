@@ -104,6 +104,9 @@ class QuizActivityViewModel : ViewModel() {
         configRef = db.getReference(fbref.opConfig)
         quesRef = db.getReference(fbref.quizConfig)
 
+        quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().change_que)
+            .setValue(false)
+
         checkQuizValidity()
         loadCurrentQuestion()
     }

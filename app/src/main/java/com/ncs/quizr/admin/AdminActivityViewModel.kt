@@ -12,6 +12,8 @@ import com.google.firebase.ktx.Firebase
 import com.ncs.quizr.dataClasses.QuizModelConstants
 import com.ncs.quizr.dataClasses.leaderboardUser
 import com.ncs.quizr.dataClasses.realTimeDatabaseRefPaths
+import java.util.Timer
+import kotlin.concurrent.schedule
 import kotlin.math.log
 
 
@@ -64,10 +66,12 @@ class AdminActivityViewModel : ViewModel() {
         db = Firebase.database
         configRef = db.getReference(fbref.opConfig)
         quesRef = db.getReference(fbref.quizConfig)
-
         configRef.child(fbref.opConfig_isStarted).addValueEventListener(statusListner)
 
+
     }
+
+
 
     fun setQuizStatus( statusCode: String){
                     configRef.child(fbref.opConfig_isStarted).setValue(statusCode)
@@ -148,6 +152,12 @@ class AdminActivityViewModel : ViewModel() {
             }.addOnFailureListener {
                 isQueSetLiveData.value = 404
             }
+
+        Timer("SetTrue",false).schedule(500){
+            quesRef.child(fbref.queStatus().currentQue).child(fbref.queStatus().change_que)
+                .setValue(true)
+        }
+
 
         resetValues()
     }

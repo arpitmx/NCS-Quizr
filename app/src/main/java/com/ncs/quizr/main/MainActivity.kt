@@ -69,11 +69,13 @@ class MainActivity : AppCompatActivity() {
                 binding.startQuizbtn.text = "Start Quiz!\uD83C\uDF7B"
                 binding.startQuizbtn.isEnabled = true
                 binding.startQuizbtn.isClickable= true
+                binding.startQuizbtn.visibility= View.VISIBLE
 
                 binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.notice.text = "-NCS OP- \n\n Admin has started the Quiz\n tap on Start Quiz button to start...\n\n*UwU*"
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved)
                 binding.progressBar.visibility = View.GONE
+
 
             }else if (started == fbref.opStatus().opNotStarted){
                 Toast.makeText(applicationContext, "Wait for admin to start", Toast.LENGTH_SHORT).show()
@@ -81,6 +83,8 @@ class MainActivity : AppCompatActivity() {
                 binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.startQuizbtn.isEnabled = false
                 binding.startQuizbtn.isClickable= false
+                binding.startQuizbtn.visibility= View.GONE
+
 
                 binding.notice.text = "-NCS OP- \n\n Waiting for the host to \nstart...\n\n*UwU*\n\n\n\n\n\n LOADING (👉ﾟヮﾟ)👉 ....."
 
@@ -93,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                 binding.startQuizbtn.text = "OP Ended! \uD83C\uDF7B "
                 binding.startQuizbtn.isEnabled = false
                 binding.startQuizbtn.isClickable= false
-
+                binding.startQuizbtn.visibility= View.GONE
                 binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.notice.text = "-NCS OP- \n\n OP Ended see you at workshops! \n\n*UwU*\n\n\n\n\n\n See ya soon!"
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
@@ -105,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                 binding.startQuizbtn.text = "Waiting for server! \uD83C\uDF7B "
                 binding.startQuizbtn.isEnabled = false
                 binding.startQuizbtn.isClickable= false
-
+                binding.startQuizbtn.visibility= View.GONE
                 binding.startQuizbtn.startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in_slow_inf))
                 binding.notice.text = "-NCS OP- \n\n Waiting for the server to respond! \n\n*UwU*\n\n\n\n\n\n Hold tight!"
                 binding.startQuizbtn.background = getDrawable(baseContext,R.drawable.button_blue_curved_disabled)
@@ -206,7 +210,7 @@ class MainActivity : AppCompatActivity() {
 
     fun initViews(){
 
-        val anim : Animation = AnimationUtils.loadAnimation(this,com.ncs.quizr.R.anim.fade_in)
+        val anim : Animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         binding.actionbr.title.startAnimation(anim)
 
 
