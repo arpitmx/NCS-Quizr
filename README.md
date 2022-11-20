@@ -1,4 +1,7 @@
+<img width="100" alt="quizrico" src="https://user-images.githubusercontent.com/59350776/202913346-0dcd7a71-3863-4858-b5c4-f1c6b82f4fae.png">
+
 # NCS-Quizr
+Making Quiz conduction faster, engaging.
 
 # Why 
 
