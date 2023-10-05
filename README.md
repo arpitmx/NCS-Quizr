@@ -5,7 +5,7 @@ Making Quiz conduction faster, engaging.
 
 # Why 
 
-  ## Problems we where facing:
+  ## Problems we were facing:
   1. Our events are heavily time constraint, and interactions like quizzes with audience takes a lot 
   of time which reduces the chances of conducting all the portions of the event in time.
   2. Ambiguity between the audience, i.e, who got the answer first.
